@@ -1,4 +1,5 @@
-#include "gui_ncs.h"
+
+#include "../includes/gui_ncs.h"
 #include <ncurses.h>
 
 

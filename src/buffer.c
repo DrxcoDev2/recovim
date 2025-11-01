@@ -7,8 +7,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "buffer.h"
-#include "gui_ncs.h"
+#include "../includes/buffer.h"
+#include "../includes/gui_ncs.h"
 
 
 /*initialize line*/

@@ -8,8 +8,8 @@
 #include <sys/stat.h>
 #include <ncurses.h>
 
-#include "gui_ncs.h"
-#include "buffer.h"
+#include "../includes/buffer.h"
+#include "../includes/gui_ncs.h"
 
 
 
