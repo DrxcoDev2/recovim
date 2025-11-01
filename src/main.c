@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -7,14 +9,49 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <ncurses.h>
+#include <signal.h>
 
 #include "../includes/buffer.h"
 #include "../includes/gui_ncs.h"
 
+buffer *start = NULL;
 
+void emergency_save(int sig) {
+    endwin(); // salir de ncurses antes de imprimir en stdout
+
+    char filename[256];
+    time_t t = time(NULL);
+    struct tm *tm_info = localtime(&t);
+
+    strftime(filename, sizeof(filename), "recovim_emergency_%Y%m%d_%H%M%S.txt", tm_info);
+
+    FILE *f = fopen(filename, "w");
+    if (!f) {
+        perror("Error al crear archivo de emergencia");
+        exit(1);
+    }
+
+    buffer *tmp = start;
+    while (tmp != NULL) {
+        fprintf(f, "%s\n", tmp->line);
+        tmp = tmp->next;
+    }
+
+    fclose(f);
+
+    printf("\n\nGuardado de emergencia realizado: %s\n", filename);
+    printf("Motivo: señal %d capturada\n", sig);
+    printf("Intenta recuperar tu trabajo desde ese archivo.\n\n");
+
+    exit(1);
+}
 
 int main(int argc, char const *argv[]){
+	signal(SIGINT, emergency_save);
+    signal(SIGSEGV, emergency_save);
+    signal(SIGTERM, emergency_save);
 
+	void emergency_save(int sig);
 
 	int fd, newfl = 0;
 	int ht, wd;
