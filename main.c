@@ -105,6 +105,7 @@ int main(int argc, char const *argv[]){
 	start = bf;
 	head = bf;
 	temp2 = bf;
+    curs_set(0);
 	loadwin(start, 0);
 	attron(COLOR_PAIR(1));
 	mvprintw(ht - 1, 0, "| filename: %s | row : %3d | col: %3d | copy: \"%s\" |", filename, y, x, copybuf );

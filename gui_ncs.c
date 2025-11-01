@@ -19,18 +19,42 @@ void curses_init(){
 }
 
 /*Renders the window from the first line i.e. Y = 0, and the "start" buffer pointer.*/
-void loadwin(buffer *bf, int y){
-	clear();
-	attron(COLOR_PAIR(3));
-	int x = 0;
-	while(bf != NULL){
-		mvprintw(y, x, "%s", bf->line);
-		y++;
-		bf = bf->next;
-	}
+void loadwin(buffer *bf, int y) {
+    int x = 0;
+    int line_offset = 6;
 
-	refresh();
+    start_color();
+    use_default_colors();
+    init_pair(10, COLOR_CYAN, -1);
+
+    attron(COLOR_PAIR(3));
+    int screen_height = LINES;
+    int line_num = 0;
+
+    // Borrar solo las líneas visibles
+    for (int i = 0; i < screen_height; i++) {
+        move(i, 0);
+        clrtoeol();
+    }
+
+    while (bf != NULL && line_num < screen_height) {
+        attron(COLOR_PAIR(10));
+        mvprintw(y, 0, "%4d", bf->cur_line);
+        attroff(COLOR_PAIR(10));
+
+        attron(COLOR_PAIR(3));
+        mvprintw(y, line_offset, "%s", bf->line);
+        attroff(COLOR_PAIR(3));
+
+        y++;
+        bf = bf->next;
+        line_num++;
+    }
+
+    refresh();
 }
+
+
 
 
 /*not used, was initially supposed to put tildes on each line, but later discarded.*/
