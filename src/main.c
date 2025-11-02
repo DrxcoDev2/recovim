@@ -13,6 +13,7 @@
 
 #include "../includes/buffer.h"
 #include "../includes/gui_ncs.h"
+#include "../includes/alloc.h"
 
 buffer *start = NULL;
 
@@ -47,25 +48,32 @@ void emergency_save(int sig) {
 }
 
 int main(int argc, char const *argv[]){
-	signal(SIGINT, emergency_save);
+	signal(SIGINT,  emergency_save);
     signal(SIGSEGV, emergency_save);
     signal(SIGTERM, emergency_save);
 
-	void emergency_save(int sig);
+    int fd, newfl = 0;
+    int ht, wd;
+    int srchflag = 0;
+    int x = 0, y = 0, offY = 0, ch, xstate = 0, cpyi = 0, colr = 1;
+    int i = 0;
 
-	int fd, newfl = 0;
-	int ht, wd;
-	int srchflag = 0;
-	int x = 0, y = 0, offY = 0, ch, xstate = 0, cpyi = 0, colr = 1;
-	int i = 0;
-	char str[LINEMAX], rstr[LINEMAX], filename[255], *srch, copybuf[LINEMAX]; /*max file name in linux is 255chars*/
-	memset(filename, '\0', 255);
-	memset(str, '\0', LINEMAX);
-	memset(rstr, '\0', LINEMAX);
-	memset(copybuf, '\0', LINEMAX);
-	buffer *bf, *start, *temp, *temp2, *head;
-	bf = (buffer *)malloc(sizeof(buffer));
-	bufInit(bf);
+    char str[LINEMAX], rstr[LINEMAX], filename[255], *srch, copybuf[LINEMAX]; 
+    memset(filename, 0, sizeof(filename));
+    memset(str, 0, sizeof(str));
+    memset(rstr, 0, sizeof(rstr));
+    memset(copybuf, 0, sizeof(copybuf));
+
+    buffer *start = NULL;
+    buffer *temp = NULL;
+    buffer *temp2 = NULL;
+    buffer *head = NULL;
+
+    buffer *bf = xmalloc(sizeof(buffer));
+    bf->line = NULL;
+    bf->next = NULL;
+
+    bufInit(bf);
 
 
 	if(argc == 2){
